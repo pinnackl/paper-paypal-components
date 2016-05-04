@@ -1,3 +1,5 @@
+var paypal = require('../modules/paypal/index');
+
 var express = require('express');
 var app = express();
 var http = require('http').Server(app);
@@ -9,6 +11,7 @@ app.use("/bower_components", express.static(__dirname + '/bower_components'));
 
 app.get('/', function(req, res) {
   res.sendFile(__dirname + '/index.html');
+  paypal.init();
 });
 
 http.listen(8000, function() {
