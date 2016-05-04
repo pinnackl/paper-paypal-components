@@ -1,0 +1,19 @@
+{
+  "name": "paper-paypal-component",
+  "version": "1.0.0",
+  "description": "A polymer implementation of Paypal API",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pinnackl/paper-paypal-component.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pinnackl/paper-paypal-component/issues"
+  },
+  "homepage": "https://github.com/pinnackl/paper-paypal-component#readme",
+  "dependencies": {
+    "express": "^4.13.4",
+    "http": "0.0.0"
+  }
+}
