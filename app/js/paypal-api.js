@@ -34,7 +34,11 @@
 			callback: function (response) {
 				var parsedResponse = JSON.parse(response.responseText);
 				paypalApi.accessToken = parsedResponse.token_type + " " + parsedResponse.access_token;
-			}
+			},
+			headers: [
+				{'header': 'X-Requested-With', 'value': 'XMLHttpRequest'},
+				{'header': 'Content-Type', 'value': 'application/x-www-form-urlencoded'}
+			]
 		})
 	};
 
@@ -91,21 +95,28 @@
 		var type 		= typeof param.type !== 'undefined' ? param.type  : "GET";
 		var data 		= typeof param.data !== 'undefined' ? helper.encodeData(param.data)  : helper.encodeData({});
 		var callback 	= typeof param.callback !== 'undefined' ? param.callback  : function () {};
-		var headers 	= typeof param.headers !== 'undefined' ? param.headers  : [{'header': 'X-Requested-With', 'value': 'XMLHttpRequest'}, {'header': 'Content-Type', 'value': 'application/x-www-form-urlencoded'}];
+		var headers 	= typeof param.headers !== 'undefined' ? param.headers  : [];
 		var user 		= typeof param.user !== 'undefined' ? param.user  : null;
 		var password	= typeof param.password !== 'undefined' ? param.password  : null;
 
 		var request = new XMLHttpRequest();
 		request.open(type, url, true, user, password);
 
+		if (type.toLowerCase() == "post") {
+			request.setRequestHeader("conte", "application/json");
+			request.setRequestHeader("content-type", "application/json");
+
+			var data = JSON.stringify(param.data);
+		}
+
 		for (var i = 0; i < headers.length; i++) {
 			request.setRequestHeader(headers[i].header, headers[i].value);
 		};
 
 		request.onload = function() {
-				callback(request);
 			if (request.status >= 200 && request.status < 400) {
 				// Success!
+				callback(request);
 			} else {
 				// Error!
 				console.log("error");
@@ -132,6 +143,10 @@
 	        }).join('&');
 
 	    return encodeURI(queryString);
+	}
+
+	helper.encodeFormData = function (data) {
+
 	}
 
 	/**

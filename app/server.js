@@ -1,8 +1,12 @@
 var paypal = require('../modules/paypal/index');
 
 var express = require('express');
+var bodyParser = require('body-parser');
+
 var app = express();
 var http = require('http').Server(app);
+
+app.use(bodyParser());
 
 app.use("/css", express.static(__dirname + '/css'));
 app.use("/js", express.static(__dirname + '/js'));
