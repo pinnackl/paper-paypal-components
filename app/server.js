@@ -11,7 +11,11 @@ app.use("/bower_components", express.static(__dirname + '/bower_components'));
 
 app.get('/', function(req, res) {
   res.sendFile(__dirname + '/index.html');
-  paypal.init();
+
+  var url = req.protocol + '://' + req.get('host') + req.originalUrl;
+
+  paypal.init(app, __dirname);
+  paypal.getConfig(url);
 });
 
 http.listen(8000, function() {
