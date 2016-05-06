@@ -38,6 +38,39 @@
 		})
 	};
 
+	paypalApi.sendPayment = function () {
+		var url  = helper.getUrl("/paypal/payment");
+		var cancelUrl = helper.getUrl("/guide/pay_paypal/curl?cancel=true");
+		var returnUrl = helper.getUrl("/guide/pay_paypal/curl?success=true");
+
+		helper.ajax({
+			url: url,
+			type: "POST",
+			data: { 
+				"transaction" :	{
+					"transactions": [{
+						"amount": {
+							"currency":"USD",
+							"total":"12"
+						},
+						"description":"creating a payment"
+					}],
+					"payer": {
+						"payment_method":"paypal"
+					},
+					"intent":"sale",
+					"redirect_urls": {
+						"cancel_url": cancelUrl,
+						"return_url": returnUrl
+					}
+				}
+			},
+			callback: function (response) {
+				var parsedResponse = JSON.parse(response.responseText);
+				console.log(parsedResponse);
+			}
+		})
+	};
 
 
 	/****************************************************************************************************\
