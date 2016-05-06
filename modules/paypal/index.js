@@ -4,6 +4,7 @@
  */
 var XMLHttpRequest 	= require("xmlhttprequest").XMLHttpRequest
 var btoa 			= require("btoa");
+var url 			= require('url');
 
 
 /**
@@ -21,11 +22,23 @@ paypal.config = {
 paypal.urls = {
 	auth: {
 		url: "https://api.sandbox.paypal.com/v1/oauth2/token",
-		headers: {
-			header: "Accept",
-			value: "application/json"
-		},
+		headers: [
+			{
+				header: "Accept",
+				value: "application/json"
+			}
+		],
 		data: {grant_type: "client_credentials"}
+	},
+	payment: {
+		url: "https://api.sandbox.paypal.com/v1/payments/payment",
+		headers: [
+			{
+				header: "Content-Type",
+				value: "application/json"
+			}
+		],
+		data: {}
 	}
 };
 
@@ -42,7 +55,17 @@ paypal.init = function (app, dir) {
 	app.get('/paypal/gettoken', function (req, res) {
 		var url = req.protocol + '://' + req.get('host');
 		paypal.getConfig(url, req, res);
-	})
+	});
+
+	app.post('/paypal/payment', function (req, res) {
+
+		var url_parts = url.parse(req.url, true);
+	
+		res.setHeader('Content-Type', 'application/json');
+		res.send(JSON.stringify({plop: "plop"}));
+
+		// paypal.payment({});
+	});
 
 	// FIXME : define all route
 	// ...
@@ -101,7 +124,7 @@ paypal.showConfig = function () {
  * @return {[type]}       [description]
  */
 paypal.oauth = function (param) {
-	var endPoint 	= typeof param.endPoint !== 'undefined' ? param.endPoint : null;
+	var endPoint 	= typeof param.endPoint !== 'undefined' ? param.endPoint : paypal.urls.auth.url;
 	var user 		= typeof param.user !== 'undefined' ? param.user : null;
 	var password 	= typeof param.password !== 'undefined' ? param.password : null;
 	var callback 	= typeof param.callback !== 'undefined' ? param.callback : function () {};
@@ -109,7 +132,6 @@ paypal.oauth = function (param) {
 	helper.ajax({
 		url: endPoint,
 		type: 'POST',
-		data: {},
 		callback: callback,
 		data: {
 			grant_type: 'client_credentials'
@@ -117,6 +139,18 @@ paypal.oauth = function (param) {
 		user: user,
 		password: password
 	});
+};
+
+/**
+ * [payment description]
+ * @param  {[type]} param [description]
+ * @return {[type]}       [description]
+ */
+paypal.payment = function (param) {
+	var endPoint 	= typeof param.endPoint !== 'undefined' ? param.endPoint : paypal.urls.payment.url;
+	var headers		= typeof param.headers !== 'undefined' ? param.headers : paypal.urls.payment.headers;
+
+	console.log(endPoint, headers);
 };
 
 /**
