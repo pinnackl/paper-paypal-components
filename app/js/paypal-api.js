@@ -14,6 +14,32 @@
 	********************************************PAYPAL METHODS********************************************
 	\****************************************************************************************************/
 
+	/**
+	 * [accessToken description]
+	 * @type {Object}
+	 */
+	paypalApi.accessToken = {};
+	
+	/**
+	 * [getToken description]
+	 * @param  {[type]} baseUrl [description]
+	 * @return {[type]}         [description]
+	 */
+	paypalApi.getToken = function (baseUrl) {
+		var url  = helper.getUrl("/paypal/gettoken");
+
+
+		helper.ajax({
+			url: url,
+			type: "GET",
+			callback: function (response) {
+				console.log(response.responseText);
+				// JSON.parse ...
+				// paypalApi.accessToken = ...
+			}
+		})
+	};
+
 
 
 	/****************************************************************************************************\
@@ -46,9 +72,9 @@
 		};
 
 		request.onload = function() {
+				callback(request);
 			if (request.status >= 200 && request.status < 400) {
 				// Success!
-				callback(request);
 			} else {
 				// Error!
 				console.log("error");
@@ -76,4 +102,30 @@
 
 	    return encodeURI(queryString);
 	}
+
+	/**
+	 * [getUrl description]
+	 * @param  {[type]} path [description]
+	 * @return {[type]}      [description]
+	 */
+	helper.getUrl = function (path) {
+		// Get the window location
+		var l = window.location;
+
+		var protocol = l.protocol;
+		var host = l.hostname;
+		var port = l.port;
+		var path = typeof path !== 'undefined' ? path : l.pathname;
+		var hash = l.hash;
+
+		var url = protocol + "//" + host + (port !== "" ? ":" + port : null) + path + hash;
+
+		return url;
+	};
+
+	/**
+	 * Register api
+	 */
+	window.paypalApi = paypalApi;
+	window.paypalHelper = helper;
 })(document);
