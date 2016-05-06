@@ -18,7 +18,7 @@
 	 * [accessToken description]
 	 * @type {Object}
 	 */
-	paypalApi.accessToken = {};
+	paypalApi.accessToken = null;
 	
 	/**
 	 * [getToken description]
@@ -28,14 +28,12 @@
 	paypalApi.getToken = function (baseUrl) {
 		var url  = helper.getUrl("/paypal/gettoken");
 
-
 		helper.ajax({
 			url: url,
 			type: "GET",
 			callback: function (response) {
-				console.log(response.responseText);
-				// JSON.parse ...
-				// paypalApi.accessToken = ...
+				var parsedResponse = JSON.parse(response.responseText);
+				paypalApi.accessToken = parsedResponse.token_type + " " + parsedResponse.access_token;
 			}
 		})
 	};
