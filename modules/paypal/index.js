@@ -63,7 +63,7 @@ paypal.getConfig = function (url) {
 			
 			// Get the oauth token
 			paypal.oauth({
-				endPoint: paypal.urls.auth.url + "?grant_type=client_credentials",
+				endPoint: paypal.urls.auth.url,
 				user: paypal.config.clientID,
 				password: paypal.config.secret
 			});
@@ -96,6 +96,9 @@ paypal.oauth = function (param) {
 		callback: function (request) {
 			console.log(JSON.parse(request.responseText));
 		},
+		data: {
+			grant_type: 'client_credentials'
+		},
 		user: user,
 		password: password
 	});
@@ -113,9 +116,9 @@ paypal.oauth = function (param) {
 helper.ajax = function (param) {
 	var url 		= typeof param.url !== 'undefined' ? param.url  : "/";
 	var type 		= typeof param.type !== 'undefined' ? param.type  : "GET";
-	var data 		= typeof param.data !== 'undefined' ? param.data  : null;
+	var data 		= typeof param.data !== 'undefined' ? helper.encodeData(param.data)  : helper.encodeData({});
 	var callback 	= typeof param.callback !== 'undefined' ? param.callback  : function () {};
-	var headers 	= typeof param.headers !== 'undefined' ? param.headers  : [{'header': 'X-Requested-With', 'value': 'XMLHttpRequest'}];
+	var headers 	= typeof param.headers !== 'undefined' ? param.headers  : [{'header': 'X-Requested-With', 'value': 'XMLHttpRequest'}, {'header': 'Content-Type', 'value': 'application/x-www-form-urlencoded'}];
 	var user 		= typeof param.user !== 'undefined' ? param.user  : null;
 	var password	= typeof param.password !== 'undefined' ? param.password  : null;
 
@@ -141,8 +144,22 @@ helper.ajax = function (param) {
 	  // There was a connection error of some sort
 	};
 
-	request.send();
+	request.send(data);
 };
+
+/**
+ * [encodeData description]
+ * @param  {[type]} data [description]
+ * @return {[type]}      [description]
+ */
+helper.encodeData = function (data) {
+    var queryString = Object.keys(data).map(function(key) {
+            return encodeURIComponent(key) + '=' +
+                encodeURIComponent(data[key]);
+        }).join('&');
+
+    return encodeURI(queryString);
+}
 
 /**
  * Module exports.
