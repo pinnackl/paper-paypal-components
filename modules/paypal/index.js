@@ -58,13 +58,14 @@ paypal.init = function (app, dir) {
 	});
 
 	app.post('/paypal/payment', function (req, res) {
+		var data = req.body.transaction;
 
-		var url_parts = url.parse(req.url, true);
-	
-		res.setHeader('Content-Type', 'application/json');
-		res.send(JSON.stringify({plop: "plop"}));
+		// res.setHeader('Content-Type', 'application/json');
+		// res.send(data);
 
-		// paypal.payment({});
+		paypal.payment({
+			data: data
+		});
 	});
 
 	// FIXME : define all route
@@ -130,12 +131,9 @@ paypal.oauth = function (param) {
 	var callback 	= typeof param.callback !== 'undefined' ? param.callback : function () {};
 
 	helper.ajax({
-		url: endPoint,
+		url: endPoint + '?grant_type=client_credentials',
 		type: 'POST',
 		callback: callback,
-		data: {
-			grant_type: 'client_credentials'
-		},
 		user: user,
 		password: password
 	});
@@ -149,8 +147,12 @@ paypal.oauth = function (param) {
 paypal.payment = function (param) {
 	var endPoint 	= typeof param.endPoint !== 'undefined' ? param.endPoint : paypal.urls.payment.url;
 	var headers		= typeof param.headers !== 'undefined' ? param.headers : paypal.urls.payment.headers;
+	var data 		= typeof param.data !== 'undefined' ? param.data : {};
 
-	console.log(endPoint, headers);
+	helper.ajax({
+		url: endPoint,
+		data: data
+	});
 };
 
 /**
@@ -177,6 +179,13 @@ helper.ajax = function (param) {
 	for (var i = 0; i < headers.length; i++) {
 		request.setRequestHeader(headers[i].header, headers[i].value);
 	};
+
+	if (data !== "" && type.toLowerCase() == "post") {
+		request.setRequestHeader("conte", "application/json");
+		request.setRequestHeader("content-type", "application/json");
+
+		var data = JSON.stringify(param.data);
+	}
 
 	request.onload = function() {
 		if (request.status >= 200 && request.status < 400) {
@@ -206,7 +215,6 @@ helper.encodeData = function (data) {
             return encodeURIComponent(key) + '=' +
                 encodeURIComponent(data[key]);
         }).join('&');
-
     return encodeURI(queryString);
 }
 
