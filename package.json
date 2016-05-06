@@ -13,7 +13,9 @@
   },
   "homepage": "https://github.com/pinnackl/paper-paypal-component#readme",
   "dependencies": {
+    "btoa": "^1.1.2",
     "express": "^4.13.4",
+    "form-data": "^1.0.0-rc4",
     "http": "0.0.0",
     "xmlhttprequest": "^1.8.0"
   }
