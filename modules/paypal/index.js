@@ -39,6 +39,11 @@ paypal.init = function (app, dir) {
 		res.sendFile(dir + '/config.json');
 	});
 
+	app.get('/paypal/gettoken', function (req, res) {
+		var url = req.protocol + '://' + req.get('host');
+		paypal.getConfig(url, req, res);
+	})
+
 	// FIXME : define all route
 	// ...
 };
@@ -47,14 +52,18 @@ paypal.init = function (app, dir) {
  * [getConfig description]
  * @return {[type]} [description]
  */
-paypal.getConfig = function (url) {
+paypal.getConfig = function (url, req, res) {
 	var url = typeof url !== 'undefined' ?  url : null;
+	var req = typeof req !== 'undefined' ?  req : null;
+	var res = typeof res !== 'undefined' ?  res : null;
+
 	if (null) {
 		return;
 	}
 
+	// FIXME: Assure the the url is the good one
 	helper.ajax({
-		url: url + 'config.json',
+		url: url + '/config.json',
 		type: "GET",
 		callback: function (request) {
 			var data = JSON.parse(request.responseText);
@@ -62,10 +71,17 @@ paypal.getConfig = function (url) {
 			paypal.config = data;
 			
 			// Get the oauth token
+			// And return the json response to the api
 			paypal.oauth({
 				endPoint: paypal.urls.auth.url,
 				user: paypal.config.clientID,
-				password: paypal.config.secret
+				password: paypal.config.secret,
+				callback: function (request) {
+					if (JSON.parse(request.responseText)) {
+						res.setHeader('Content-Type', 'application/json');
+						res.send(JSON.stringify(JSON.parse(request.responseText)))
+					}
+				}
 			});
 		}
 	});
@@ -88,14 +104,13 @@ paypal.oauth = function (param) {
 	var endPoint 	= typeof param.endPoint !== 'undefined' ? param.endPoint : null;
 	var user 		= typeof param.user !== 'undefined' ? param.user : null;
 	var password 	= typeof param.password !== 'undefined' ? param.password : null;
+	var callback 	= typeof param.callback !== 'undefined' ? param.callback : function () {};
 
 	helper.ajax({
 		url: endPoint,
 		type: 'POST',
 		data: {},
-		callback: function (request) {
-			console.log(JSON.parse(request.responseText));
-		},
+		callback: callback,
 		data: {
 			grant_type: 'client_credentials'
 		},
