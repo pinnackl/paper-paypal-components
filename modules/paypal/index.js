@@ -60,8 +60,6 @@ paypal.init = function (app, dir) {
 	app.post('/paypal/payment', function (req, res) {
 		var data = req.body.transaction;
 		var res = res;
-		// res.setHeader('Content-Type', 'application/json');
-		// res.send(data);
 
 		paypal.payment({
 			data: data,
@@ -72,7 +70,8 @@ paypal.init = function (app, dir) {
 				res.status(response.status);
 				res.setHeader('Content-Type', 'application/json');
 				res.send({"error": "transaction error"});
-			}
+			},
+			headers: [{header: 'Authorization', value: req.get('Authorization')}]
 		});
 	});
 
@@ -201,6 +200,8 @@ helper.ajax = function (param) {
 
 		var data = JSON.stringify(param.data);
 	}
+
+	console.log(request);
 
 	request.onload = function() {
 		if (request.status >= 200 && request.status < 400) {
