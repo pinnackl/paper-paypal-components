@@ -69,7 +69,9 @@ paypal.init = function (app, dir) {
 				console.log(response.responseText);
 			},
 			failure: function (response) {
-				console.log(res);
+				res.status(response.status);
+				res.setHeader('Content-Type', 'application/json');
+				res.send({"error": "transaction error"});
 			}
 		});
 	});
