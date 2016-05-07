@@ -59,13 +59,20 @@ paypal.init = function (app, dir) {
 
 	app.post('/paypal/payment', function (req, res) {
 		var data = req.body.transaction;
+		var res = res;
 
 		// res.setHeader('Content-Type', 'application/json');
 		// res.send(data);
 
-		paypal.payment({
-			data: data
-		});
+		// paypal.payment({
+		// 	data: data,
+		// 	callback: function (response) {
+				
+		// 	},
+		// 	failure: function (response) {
+		// 		console.log(response);
+		// 	}
+		// });
 	});
 
 	// FIXME : define all route
@@ -148,11 +155,14 @@ paypal.payment = function (param) {
 	var endPoint 	= typeof param.endPoint !== 'undefined' ? param.endPoint : paypal.urls.payment.url;
 	var headers		= typeof param.headers !== 'undefined' ? param.headers : paypal.urls.payment.headers;
 	var data 		= typeof param.data !== 'undefined' ? param.data : {};
+	var callback	= typeof param.callback !== 'undefined' ? param.callback : function () {};
 
-	helper.ajax({
-		url: endPoint,
-		data: data
-	});
+	// helper.ajax({
+	// 	url: endPoint,
+	// 	type: 'POST',
+	// 	data: data,
+	// 	callback: callback
+	// });
 };
 
 /**
@@ -161,6 +171,7 @@ paypal.payment = function (param) {
  * @param  {[type]} type
  * @param  {[type]} data
  * @param  {[type]} callback
+ * @param  {[type]} failure
  * @param  {[type]} headers
  * @return {[type]}
  */
@@ -169,6 +180,7 @@ helper.ajax = function (param) {
 	var type 		= typeof param.type !== 'undefined' ? param.type  : "GET";
 	var data 		= typeof param.data !== 'undefined' ? helper.encodeData(param.data)  : helper.encodeData({});
 	var callback 	= typeof param.callback !== 'undefined' ? param.callback  : function () {};
+	var failure 	= typeof param.failure !== 'undefined' ? param.failure  : function () {};
 	var headers 	= typeof param.headers !== 'undefined' ? param.headers  : [{'header': 'X-Requested-With', 'value': 'XMLHttpRequest'}, {'header': 'Content-Type', 'value': 'application/x-www-form-urlencoded'}];
 	var user 		= typeof param.user !== 'undefined' ? param.user  : null;
 	var password	= typeof param.password !== 'undefined' ? param.password  : null;
@@ -179,7 +191,6 @@ helper.ajax = function (param) {
 	for (var i = 0; i < headers.length; i++) {
 		request.setRequestHeader(headers[i].header, headers[i].value);
 	};
-
 	if (data !== "" && type.toLowerCase() == "post") {
 		request.setRequestHeader("conte", "application/json");
 		request.setRequestHeader("content-type", "application/json");
@@ -193,8 +204,8 @@ helper.ajax = function (param) {
 			callback(request);
 		} else {
 			// Error!
-			console.log("error");
-			console.log(JSON.parse(request.responseText));
+			console.log(request.status, " error: ", request.responseText);
+			failure(request);
 		}
 	};
 

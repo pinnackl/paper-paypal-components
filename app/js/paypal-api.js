@@ -87,6 +87,7 @@
 	 * @param  {[type]} type
 	 * @param  {[type]} data
 	 * @param  {[type]} callback
+	 * @param  {[type]} failure
 	 * @param  {[type]} headers
 	 * @return {[type]}
 	 */
@@ -95,7 +96,8 @@
 		var type 		= typeof param.type !== 'undefined' ? param.type  : "GET";
 		var data 		= typeof param.data !== 'undefined' ? helper.encodeData(param.data)  : helper.encodeData({});
 		var callback 	= typeof param.callback !== 'undefined' ? param.callback  : function () {};
-		var headers 	= typeof param.headers !== 'undefined' ? param.headers  : [];
+		var failure 	= typeof param.failure !== 'undefined' ? param.failure  : function () {};
+		var headers 	= typeof param.headers !== 'undefined' ? param.headers  : [{'header': 'X-Requested-With', 'value': 'XMLHttpRequest'}, {'header': 'Content-Type', 'value': 'application/x-www-form-urlencoded'}];
 		var user 		= typeof param.user !== 'undefined' ? param.user  : null;
 		var password	= typeof param.password !== 'undefined' ? param.password  : null;
 
@@ -119,8 +121,8 @@
 				callback(request);
 			} else {
 				// Error!
-				console.log("error");
-				console.log(JSON.parse(request.responseText));
+				console.log(request.status, " error: ", request.responseText);
+				failure(request);
 			}
 		};
 
