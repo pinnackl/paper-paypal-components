@@ -60,19 +60,19 @@ paypal.init = function (app, dir) {
 	app.post('/paypal/payment', function (req, res) {
 		var data = req.body.transaction;
 		var res = res;
-
+		console.log(req.body);
 		// res.setHeader('Content-Type', 'application/json');
 		// res.send(data);
 
-		// paypal.payment({
-		// 	data: data,
-		// 	callback: function (response) {
-				
-		// 	},
-		// 	failure: function (response) {
-		// 		console.log(response);
-		// 	}
-		// });
+		paypal.payment({
+			data: data,
+			callback: function (response) {
+				console.log(response.responseText);
+			},
+			failure: function (response) {
+				console.log(res);
+			}
+		});
 	});
 
 	// FIXME : define all route
@@ -181,7 +181,7 @@ helper.ajax = function (param) {
 	var data 		= typeof param.data !== 'undefined' ? helper.encodeData(param.data)  : helper.encodeData({});
 	var callback 	= typeof param.callback !== 'undefined' ? param.callback  : function () {};
 	var failure 	= typeof param.failure !== 'undefined' ? param.failure  : function () {};
-	var headers 	= typeof param.headers !== 'undefined' ? param.headers  : [{'header': 'X-Requested-With', 'value': 'XMLHttpRequest'}, {'header': 'Content-Type', 'value': 'application/x-www-form-urlencoded'}];
+	var headers 	= typeof param.headers !== 'undefined' ? param.headers  : [{'header': 'X-Requested-With', 'value': 'XMLHttpRequest'}];
 	var user 		= typeof param.user !== 'undefined' ? param.user  : null;
 	var password	= typeof param.password !== 'undefined' ? param.password  : null;
 
@@ -191,6 +191,7 @@ helper.ajax = function (param) {
 	for (var i = 0; i < headers.length; i++) {
 		request.setRequestHeader(headers[i].header, headers[i].value);
 	};
+
 	if (data !== "" && type.toLowerCase() == "post") {
 		request.setRequestHeader("conte", "application/json");
 		request.setRequestHeader("content-type", "application/json");
