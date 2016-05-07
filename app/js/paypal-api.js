@@ -67,12 +67,16 @@
 						"cancel_url": cancelUrl,
 						"return_url": returnUrl
 					}
-				}
+				},
 			},
 			callback: function (response) {
 				var parsedResponse = JSON.parse(response.responseText);
 				console.log(parsedResponse);
-			}
+			},
+			headers: [{
+				header: 'Authorization',
+				value: paypalApi.accessToken
+			}]
 		})
 	};
 
