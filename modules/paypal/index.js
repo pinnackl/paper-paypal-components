@@ -60,7 +60,6 @@ paypal.init = function (app, dir) {
 	app.post('/paypal/payment', function (req, res) {
 		var data = req.body.transaction;
 		var res = res;
-		console.log(req.body);
 		// res.setHeader('Content-Type', 'application/json');
 		// res.send(data);
 
@@ -156,13 +155,15 @@ paypal.payment = function (param) {
 	var headers		= typeof param.headers !== 'undefined' ? param.headers : paypal.urls.payment.headers;
 	var data 		= typeof param.data !== 'undefined' ? param.data : {};
 	var callback	= typeof param.callback !== 'undefined' ? param.callback : function () {};
+	var failure		= typeof param.failure !== 'undefined' ? param.failure : function () {};
 
-	// helper.ajax({
-	// 	url: endPoint,
-	// 	type: 'POST',
-	// 	data: data,
-	// 	callback: callback
-	// });
+	helper.ajax({
+		url: endPoint,
+		type: 'POST',
+		data: data,
+		callback: callback,
+		failure: failure
+	});
 };
 
 /**
@@ -212,6 +213,7 @@ helper.ajax = function (param) {
 
 	request.onerror = function() {
 	  // There was a connection error of some sort
+	  console.log(request.status);
 	};
 
 	request.send(data);
