@@ -62,16 +62,20 @@ paypal.init = function (app, dir) {
 		var res = res;
 
 		paypal.payment({
+			type: 'POST',
 			data: data,
 			callback: function (response) {
 				console.log(response.responseText);
 			},
 			failure: function (response) {
 				res.status(response.status);
-				res.setHeader('Content-Type', 'application/json');
+				res.setHeader('content-Type', 'application/json');
 				res.send({"error": "transaction error"});
 			},
-			headers: [{header: 'Authorization', value: req.get('Authorization')}]
+			headers: [
+				{header: 'Authorization', value: req.get('Authorization')},
+				{header: 'Content-Type', value: 'application/json'}
+			]
 		});
 	});
 
@@ -163,7 +167,8 @@ paypal.payment = function (param) {
 		type: 'POST',
 		data: data,
 		callback: callback,
-		failure: failure
+		failure: failure,
+		headers: headers
 	});
 };
 
@@ -189,19 +194,17 @@ helper.ajax = function (param) {
 
 	var request = new XMLHttpRequest();
 	request.open(type, url, true, user, password);
+	request.withCredentials = true;
 
 	for (var i = 0; i < headers.length; i++) {
 		request.setRequestHeader(headers[i].header, headers[i].value);
 	};
 
 	if (data !== "" && type.toLowerCase() == "post") {
-		request.setRequestHeader("conte", "application/json");
-		request.setRequestHeader("content-type", "application/json");
+		request.setRequestHeader("Content-type", "application/json");
 
 		var data = JSON.stringify(param.data);
 	}
-
-	console.log(request);
 
 	request.onload = function() {
 		if (request.status >= 200 && request.status < 400) {
