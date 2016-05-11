@@ -65,7 +65,9 @@ paypal.init = function (app, dir) {
 			type: 'POST',
 			data: data,
 			callback: function (response) {
-				console.log(response.responseText);
+				res.status(response.status);
+				res.setHeader('content-Type', 'application/json');
+				res.send(response.responseText);
 			},
 			failure: function (response) {
 				res.status(response.status);
