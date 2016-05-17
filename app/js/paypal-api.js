@@ -57,7 +57,7 @@
 			url: url,
 			type: "POST",
 			data: { 
-				"payer_id" :	{
+				"transaction" :	{
 					"transactions": [{
 						"amount": {
 							"currency":"USD",
