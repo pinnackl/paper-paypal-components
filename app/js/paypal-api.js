@@ -50,8 +50,8 @@
 
 	paypalApi.sendPayment = function () {
 		var url  = helper.getUrl("/paypal/payment");
-		var cancelUrl = helper.getUrl("/paypal/pay?cancel=true");
-		var returnUrl = helper.getUrl("/paypal/pay?success=true");
+		var cancelUrl = helper.getUrl("/?cancel=true");
+		var returnUrl = helper.getUrl("/?success=true");
 
 		helper.ajax({
 			url: url,
@@ -95,12 +95,17 @@
 
 	paypalApi.executePayment = function () {
 		var url  = helper.getUrl("/paypal/execute");
+		var query = (window.location.search || '?').substr(1);
+        var map = {};
+	    query.replace(/([^&=]+)=?([^&]*)(?:&+|$)/g, function(match, key, value) {
+	        (map[key] = map[key] || []).push(value);
+	    });
 
 		helper.ajax({
 			url: url,
 			type: "POST",
 			data: { 
-				"payer_id" : paypalApi.payerId,
+				"payer_id" : map.PayerId,
 			},
 			callback: function (response) {
 				var parsedResponse = JSON.parse(response.responseText);
