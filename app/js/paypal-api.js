@@ -71,7 +71,14 @@
 			},
 			callback: function (response) {
 				var parsedResponse = JSON.parse(response.responseText);
-				console.log(parsedResponse);
+				var aLinks = parsedResponse.links;
+				for (var i = 0; i < aLinks.length; i++) {
+				    if(aLinks[i].rel == "approval_url") {
+						paypalApi.approvalUrl = aLinks[i].href;	
+						break;			    	
+				    }
+				}
+				window.location.href = paypalApi.approvalUrl;
 			},
 			headers: [{
 				header: 'Authorization',
@@ -79,6 +86,8 @@
 			}]
 		})
 	};
+
+
 
 
 	/****************************************************************************************************\
