@@ -50,8 +50,8 @@
 
 	paypalApi.sendPayment = function () {
 		var url  = helper.getUrl("/paypal/payment");
-		var cancelUrl = helper.getUrl("/pay_paypal/pay/curl?cancel=true");
-		var returnUrl = helper.getUrl("/pay_paypal/pay/curl?success=true");
+		var cancelUrl = helper.getUrl("/paypal/pay?cancel=true");
+		var returnUrl = helper.getUrl("/paypal/pay?success=true");
 
 		helper.ajax({
 			url: url,
