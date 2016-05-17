@@ -80,11 +80,6 @@ paypal.init = function (app, dir) {
 			]
 		});
 	});
-	
-	app.get('/paypal/pay', function (req, res) {
-		res.setHeader('content-Type', 'application/json');
-		res.send(req.query);
-	});
 
 	// FIXME : define all route
 	// ...
