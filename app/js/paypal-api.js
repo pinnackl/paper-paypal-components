@@ -19,6 +19,12 @@
 	 * @type {Object}
 	 */
 	paypalApi.accessToken = null;
+
+	/**
+	 * [approvalUrl description]
+	 * @type {Object}
+	 */
+	paypalApi.approvalUrl = null;
 	
 	/**
 	 * [getToken description]
@@ -44,14 +50,14 @@
 
 	paypalApi.sendPayment = function () {
 		var url  = helper.getUrl("/paypal/payment");
-		var cancelUrl = helper.getUrl("/guide/pay_paypal/curl?cancel=true");
-		var returnUrl = helper.getUrl("/guide/pay_paypal/curl?success=true");
+		var cancelUrl = helper.getUrl("/pay_paypal/pay/curl?cancel=true");
+		var returnUrl = helper.getUrl("/pay_paypal/pay/curl?success=true");
 
 		helper.ajax({
 			url: url,
 			type: "POST",
 			data: { 
-				"transaction" :	{
+				"payer_id" :	{
 					"transactions": [{
 						"amount": {
 							"currency":"USD",
@@ -79,6 +85,27 @@
 				    }
 				}
 				window.location.href = paypalApi.approvalUrl;
+			},
+			headers: [{
+				header: 'Authorization',
+				value: paypalApi.accessToken
+			}]
+		})
+	};
+
+	paypalApi.executePayment = function () {
+		var url  = helper.getUrl("/paypal/execute");
+
+		helper.ajax({
+			url: url,
+			type: "POST",
+			data: { 
+				"payer_id" : paypalApi.payerId,
+			},
+			callback: function (response) {
+				var parsedResponse = JSON.parse(response.responseText);
+				paypalApi.paymentId = parsedResponse.id;
+				paypalApi.state = parsedResponse.state;
 			},
 			headers: [{
 				header: 'Authorization',
