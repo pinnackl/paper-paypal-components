@@ -81,6 +81,12 @@ paypal.init = function (app, dir) {
 		});
 	});
 
+	
+	app.get('/paypal/pay', function (req, res) {
+		console.log(req.query);
+		res.setHeader('content-Type', 'application/json');
+		res.send({"error": "transaction error"});
+	});
 	// FIXME : define all route
 	// ...
 };
