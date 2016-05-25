@@ -29,7 +29,6 @@
 	/**
 	 * [getToken description]
 	 * @param  {[type]} baseUrl [description]
-	 * @return {[type]}         [description]
 	 */
 	paypalApi.getToken = function (baseUrl) {
 		var url  = helper.getUrl("/paypal/gettoken");
@@ -48,10 +47,33 @@
 		})
 	};
 
-	paypalApi.sendPayment = function () {
+	/**
+	 * [sendPayment description]
+	 * @param  {[object]} params [Object containing parameters to send to PayPal]
+	 * 		{[string]} price 
+	 * 		{[string]} currency 
+	 * 		{[string]} description 
+	 * 		{[string]} cancelUrl [The helper will build URL from current domain name. Only the URI is needed]
+	 * 		{[string]} returnUrl [The helper will build URL from current domain name. Only the URI is needed]
+	 */
+	paypalApi.sendPayment = function (params) {
+		if (typeof params == "undefined") {
+			console.error("No argument passed");
+			return false;
+		}
+
+		var price = typeof params.price !== 'undefined' ? params.price  : false;
+		var currency = typeof params.currency !== 'undefined' ? params.currency  : false;
+		var description = typeof params.description !== 'undefined' ? params.description  : false;
+		var cancelUrl = typeof params.cancelUrl !== 'undefined' ? helper.getUrl(params.cancelUrl) : helper.getUrl("/?cancel=true");
+		var returnUrl = typeof params.returnUrl !== 'undefined' ? helper.getUrl(params.returnUrl) : helper.getUrl("/?success=true");
+
+		if (!price || !currency || !description) {
+			console.error("Argument(s) missing");
+			return false;
+		}
+
 		var url  = helper.getUrl("/paypal/payment");
-		var cancelUrl = helper.getUrl("/?cancel=true");
-		var returnUrl = helper.getUrl("/?success=true");
 
 		helper.ajax({
 			url: url,
@@ -60,10 +82,10 @@
 				"transaction" :	{
 					"transactions": [{
 						"amount": {
-							"currency":"USD",
-							"total":"12"
+							"currency": currency,
+							"total": price
 						},
-						"description":"creating a payment"
+						"description": description
 					}],
 					"payer": {
 						"payment_method":"paypal"
@@ -79,7 +101,7 @@
 				var parsedResponse = JSON.parse(response.responseText);
 				var aLinks = parsedResponse.links;
 				for (var i = 0; i < aLinks.length; i++) {
-				    if(aLinks[i].rel == "approval_url") {
+				    if (aLinks[i].rel == "approval_url") {
 						paypalApi.approvalUrl = aLinks[i].href;	
 						break;			    	
 				    }
