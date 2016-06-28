@@ -6,7 +6,7 @@
     "type": "git",
     "url": "git+https://github.com/pinnackl/paper-paypal-component.git"
   },
-  "author": "",
+  "author": "Pinnackl",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/pinnackl/paper-paypal-component/issues"
@@ -18,6 +18,12 @@
     "express": "^4.13.4",
     "form-data": "^1.0.0-rc4",
     "http": "0.0.0",
+    "path": "^0.12.7",
     "xmlhttprequest": "^1.8.0"
-  }
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "main": "dist/paypal/index.js"
 }
