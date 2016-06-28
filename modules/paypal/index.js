@@ -52,6 +52,10 @@ paypal.init = function (app, dir) {
 		res.sendFile(dir + '/config.json');
 	});
 
+	app.get('/paypal/paper-api/paper-api.js', function (req, res) {
+		res.sendFile(dir + '/paypal-api.js');
+	});
+
 	app.get('/paypal/gettoken', function (req, res) {
 		var url = req.protocol + '://' + req.get('host');
 		paypal.getConfig(url, req, res);
