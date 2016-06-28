@@ -2,10 +2,11 @@
  * Dependencies
  * @type {[type]}
  */
+var express 		= require('express');
 var XMLHttpRequest 	= require("xmlhttprequest").XMLHttpRequest
 var btoa 			= require("btoa");
 var url 			= require('url');
-
+var path 			= require('path');
 
 /**
  * [paypal description]
@@ -48,12 +49,19 @@ paypal.urls = {
  */
 paypal.init = function (app, dir) {
 	console.log("[paypal] Paypal module ready to use");
+
 	app.get('/config.json', function (req, res) {
 		res.sendFile(dir + '/config.json');
 	});
 
-	app.get('/paypal/paper-api/paper-api.js', function (req, res) {
-		res.sendFile(dir + '/paypal-api.js');
+	/**
+	 * Create namespace paypal to load dependencies
+	 * @param  {[type]} req  [description]
+	 * @param  {[type]} res) {		res.sendFile(path.resolve('dist/paypal/paypal-api.js'));	} [description]
+	 * @return {[type]}      [description]
+	 */
+	app.get('/paypal/paypal-api.js', function (req, res) {
+		res.sendFile(path.resolve('dist/paypal/paypal-api.js'));
 	});
 
 	app.get('/paypal/gettoken', function (req, res) {
