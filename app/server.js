@@ -8,6 +8,7 @@ var http = require('http').Server(app);
 
 app.use(bodyParser());
 
+app.use("/src", express.static(__dirname + '/src'));
 app.use("/css", express.static(__dirname + '/css'));
 app.use("/js", express.static(__dirname + '/js'));
 app.use("/images", express.static(__dirname + '/images'));
@@ -19,6 +20,6 @@ app.get('/', function(req, res) {
   paypal.init(app, __dirname);
 });
 
-http.listen(8000, function() {
-  console.log('listening on *:8000');
+http.listen(8001, function() {
+  console.log('listening on *:8001');
 });

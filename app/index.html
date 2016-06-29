@@ -35,18 +35,32 @@
 
     <!-- Your styles -->
     <link rel="stylesheet" href="css/main.css">
-    <script src="/paypal/paypal-api.js"></script>
+
+    <link rel="import" href="src/paypal-element/paypal-element.html">
 </head>
 <body>
     <div class="main">
-
+        <paypal-element></paypal-element>
     </div>
 
     <!-- Include javascript libraries -->
     <!-- // <script src="//code.jquery.com/jquery-1.12.0.min.js"></script> -->
-    <script src="bower_components/jquery/dist/jquery.min.js"></script>
 
     <script src="js/main.js"></script>
     <script src="js/paypal-api.js"></script>
+    <script>
+        (function() {
+          // if ('registerElement' in document
+          //     && 'import' in document.createElement('link')
+          //     && 'content' in document.createElement('template')) {
+          //   // platform is good!
+          // } else {
+            // polyfill the platform!
+            var e = document.createElement('script');
+            e.src = '/bower_components/webcomponentsjs/webcomponents-lite.min.js';
+            document.body.appendChild(e);
+          // }
+        })();
+    </script>
 </body>
 </html>

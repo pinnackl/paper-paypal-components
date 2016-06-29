@@ -1,0 +1,96 @@
+<!--
+A comment describing this element
+
+Example:
+
+    <my-elem></my-elem>
+
+Example:
+
+    <my-elem>
+      <h2>Hello my-elem</h2>
+    </my-elem>
+
+@demo demo/index.html
+-->
+<!-- <link rel="import" href="../polymer/polymer.html"> -->
+<!-- <link rel="import" href="../paper-material/paper-material.html"> -->
+<!-- <link rel="import" href="../paper-button/paper-button.html"> -->
+<!-- <link rel="import" href="../paper-toast/paper-toast.html"> -->
+
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-toast/paper-toast.html">
+
+<dom-module id="paypal-element">
+	<template>
+		<style>
+			:host {
+				display: inline-block;
+			}
+
+			paper-button {
+				--paper-button-ink-color: #179BD7;
+			}
+		</style>
+		<paper-button raised on-tap="handlePayment">
+			<img src="paypal.svg" alt="Paypal">
+		</paper-button>
+
+		<paper-toast id="toast"
+			text="[[errorMessage]]"
+			duration="[[errorMessageDuraction]]"
+		></paper-toast>
+	</template>
+	<script>
+		Polymer({
+			is: 'paypal-element',
+			properties: {
+				cart: {
+					type: Object,
+					value: null
+				},
+				errorMessage: {
+					value: "We are sorry! An error occured, we can't pursuite your order"
+				},
+				errorMessageDuraction: {
+					value: 5000
+				}
+			},
+			handlePayment: function (argument) {
+				if (window.paypalApi && paypalApi && this.cart) {
+
+					const param = {
+						price:'10',
+						currency:'USD',
+						description:'plop'
+					};
+
+					paypalApi.getToken(_ => {
+						paypalApi.sendPayment({});
+					});
+				} else {
+					this.$.toast.open();
+					if (!this.cart) {
+						console.error("That cart property is empty");
+					} else {
+						console.error("The paypalApi must be loaded to use this element");
+					}
+				}
+			},
+			_computeHasItem: function(cartLength) {
+				return cartLength > 0;
+			},
+
+			_formatPrice: function(total) {
+			return isNaN(total) ? '' : + total.toFixed(2);
+			},
+
+			_getEntryTotal: function(entry) {
+				return this._formatPrice(entry.quantity * entry.item.price);
+			},
+
+		});
+	</script>
+</dom-module>
