@@ -30,7 +30,9 @@
 	 * [getToken description]
 	 * @param  {[type]} baseUrl [description]
 	 */
-	paypalApi.getToken = function (baseUrl) {
+	paypalApi.getToken = function (callback) {
+		var callback = typeof callback !== 'undefined' ? callback : () {};
+
 		var url  = helper.getUrl("/paypal/gettoken");
 
 		helper.ajax({
@@ -39,6 +41,8 @@
 			callback: function (response) {
 				var parsedResponse = JSON.parse(response.responseText);
 				paypalApi.accessToken = parsedResponse.token_type + " " + parsedResponse.access_token;
+
+				callback();
 			},
 			headers: [
 				{'header': 'X-Requested-With', 'value': 'XMLHttpRequest'},
@@ -55,6 +59,7 @@
 	 * 		{[string]} description 
 	 * 		{[string]} cancelUrl [The helper will build URL from current domain name. Only the URI is needed]
 	 * 		{[string]} returnUrl [The helper will build URL from current domain name. Only the URI is needed]
+	 * 		{[string]} callback  [The actions to perform after the payment succeed]
 	 */
 	paypalApi.sendPayment = function (params) {
 		if (typeof params == "undefined") {
@@ -67,6 +72,7 @@
 		var description = typeof params.description !== 'undefined' ? params.description  : false;
 		var cancelUrl = typeof params.cancelUrl !== 'undefined' ? helper.getUrl(params.cancelUrl) : helper.getUrl("/?cancel=true");
 		var returnUrl = typeof params.returnUrl !== 'undefined' ? helper.getUrl(params.returnUrl) : helper.getUrl("/?success=true");
+		var callback = typeof params.callback !== 'undefined' ? params.callback  : () {};
 
 		if (!price || !currency || !description) {
 			console.error("Argument(s) missing");
