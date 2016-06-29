@@ -31,7 +31,7 @@
 	 * @param  {[type]} baseUrl [description]
 	 */
 	paypalApi.getToken = function (callback) {
-		var callback = typeof callback !== 'undefined' ? callback : () {};
+		var callback = typeof callback !== 'undefined' ? callback : () => {};
 
 		var url  = helper.getUrl("/paypal/gettoken");
 
@@ -72,7 +72,7 @@
 		var description = typeof params.description !== 'undefined' ? params.description  : false;
 		var cancelUrl = typeof params.cancelUrl !== 'undefined' ? helper.getUrl(params.cancelUrl) : helper.getUrl("/?cancel=true");
 		var returnUrl = typeof params.returnUrl !== 'undefined' ? helper.getUrl(params.returnUrl) : helper.getUrl("/?success=true");
-		var callback = typeof params.callback !== 'undefined' ? params.callback  : () {};
+		var callback = typeof params.callback !== 'undefined' ? params.callback  : () => {};
 
 		if (!price || !currency || !description) {
 			console.error("Argument(s) missing");
