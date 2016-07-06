@@ -12,6 +12,8 @@ Requirelent :
 
 First you need to create a simple http server using nodejs and a node module called __*Express*__
 
+    Note: You could use a HTTP server without Express but it make it easier to create route in your application
+
 ## a) Install module using npm
 
 To install a node modules nodejs use npm a javascript dependency manager that list every modules available and their dependencies
@@ -32,7 +34,7 @@ Then use **npm install** to install packages
 $ npm install --save express
 ```
 
-  Note: The --save option will add the node module dependency to your package.json file
+    Note: The --save option will add the node module dependency to your package.json file
 
 The modules will be installed in a **node_modules** folder
   
