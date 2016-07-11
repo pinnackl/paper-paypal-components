@@ -67,17 +67,26 @@
 			return false;
 		}
 
-		var price = typeof params.price !== 'undefined' ? params.price  : false;
-		var currency = typeof params.currency !== 'undefined' ? params.currency  : false;
-		var description = typeof params.description !== 'undefined' ? params.description  : false;
-		var cancelUrl = typeof params.cancelUrl !== 'undefined' ? helper.getUrl(params.cancelUrl) : helper.getUrl("/?cancel=true");
-		var returnUrl = typeof params.returnUrl !== 'undefined' ? helper.getUrl(params.returnUrl) : helper.getUrl("/?success=true");
-		var callback = typeof params.callback !== 'undefined' ? params.callback  : () => {};
-
-		if (!price || !currency || !description) {
+		var transaction = typeof params.transaction !== 'undefined' ? params.transaction : false;
+		if (!transaction.length) {
 			console.error("Argument(s) missing");
 			return false;
 		}
+
+		transaction.forEach(function (el) {
+			var price = typeof el.price !== 'undefined' ? el.price  : false;
+			var currency = typeof el.currency !== 'undefined' ? el.currency  : false;
+			var description = typeof el.description !== 'undefined' ? el.description  : false;
+
+			if (!price || !currency || !description) {
+				console.error("Argument(s) missing");
+				return false;
+			}
+		});
+
+		var cancelUrl = typeof params.cancelUrl !== 'undefined' ? helper.getUrl(params.cancelUrl) : helper.getUrl("/?cancel=true");
+		var returnUrl = typeof params.returnUrl !== 'undefined' ? helper.getUrl(params.returnUrl) : helper.getUrl("/?success=true");
+		var callback = typeof params.callback !== 'undefined' ? params.callback  : () => {};
 
 		var url  = helper.getUrl("/paypal/payment");
 
@@ -86,13 +95,7 @@
 			type: "POST",
 			data: { 
 				"transaction" :	{
-					"transactions": [{
-						"amount": {
-							"currency": currency,
-							"total": price
-						},
-						"description": description
-					}],
+					"transactions": transaction,
 					"payer": {
 						"payment_method":"paypal"
 					},
