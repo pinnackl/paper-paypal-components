@@ -124,7 +124,9 @@
 		})
 	};
 
-	paypalApi.executePayment = function () {
+	paypalApi.executePayment = function (callback) {
+		var callback = typeof callback !== 'undefined' ? callback : function() {};
+
 		var url  = helper.getUrl("/paypal/execute");
 		var query = (window.location.search || '?').substr(1);
         var map = {};
@@ -142,6 +144,8 @@
 				var parsedResponse = JSON.parse(response.responseText);
 				paypalApi.paymentId = parsedResponse.id;
 				paypalApi.state = parsedResponse.state;
+
+				callback();
 			},
 			headers: [{
 				header: 'Authorization',
