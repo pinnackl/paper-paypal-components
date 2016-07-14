@@ -73,10 +73,12 @@
 			return false;
 		}
 
+		var price, currency, description;
+
 		transaction.forEach(function (el) {
-			var price = typeof el.price !== 'undefined' ? el.price  : false;
-			var currency = typeof el.currency !== 'undefined' ? el.currency  : false;
-			var description = typeof el.description !== 'undefined' ? el.description  : false;
+			price = typeof el.price !== 'undefined' ? el.price  : false;
+			currency = typeof el.currency !== 'undefined' ? el.currency  : false;
+			description = typeof el.description !== 'undefined' ? el.description  : false;
 
 			if (!price || !currency || !description) {
 				console.error("Argument(s) missing");
@@ -95,7 +97,13 @@
 			type: "POST",
 			data: { 
 				"transaction" :	{
-					"transactions": transaction,
+					"transactions": [{
+						"amount": {
+							"currency": currency,
+							"total": price
+						},
+						"description": description
+					}],
 					"payer": {
 						"payment_method":"paypal"
 					},
@@ -125,8 +133,7 @@
 	};
 
 	paypalApi.executePayment = function (callback) {
-		var callback = typeof callback !== 'undefined' ? callback : function() {};
-
+		var callback = typeof callback !== 'undefined' ? callback : function() {}; 
 		var url  = helper.getUrl("/paypal/execute");
 		var query = (window.location.search || '?').substr(1);
         var map = {};
@@ -138,7 +145,8 @@
 			url: url,
 			type: "POST",
 			data: { 
-				"payer_id" : map.PayerId,
+				"payer_id" : map.PayerID[0],
+				'paymentId' : map.paymentId[0],
 			},
 			callback: function (response) {
 				var parsedResponse = JSON.parse(response.responseText);

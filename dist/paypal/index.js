@@ -40,6 +40,16 @@ paypal.urls = {
 			}
 		],
 		data: {}
+	},
+	execute: {
+		url: "https://api.sandbox.paypal.com/v1/payments/payment/[paymentId]/execute/",
+		headers: [
+			{
+				header: "Content-Type",
+				value: "application/json"
+			}
+		],
+		data: {}
 	}
 };
 
@@ -74,6 +84,30 @@ paypal.init = function (app, dir) {
 		var res = res;
 
 		paypal.payment({
+			type: 'POST',
+			data: data,
+			callback: function (response) {
+				res.status(response.status);
+				res.setHeader('content-Type', 'application/json');
+				res.send(response.responseText);
+			},
+			failure: function (response) {
+				res.status(response.status);
+				res.setHeader('content-Type', 'application/json');
+				res.send({"error": "transaction error"});
+			},
+			headers: [
+				{header: 'Authorization', value: req.get('Authorization')},
+				{header: 'Content-Type', value: 'application/json'}
+			]
+		});
+	});
+
+	app.post('/paypal/execute', function (req, res) {
+		var data = {payer_id: {payer_id: req.body.payer_id}, paymentId: req.body.paymentId};
+		var res = res;
+
+		paypal.execute({
 			type: 'POST',
 			data: data,
 			callback: function (response) {
@@ -185,6 +219,25 @@ paypal.payment = function (param) {
 		headers: headers
 	});
 };
+
+paypal.execute = function (param) {
+	var endPoint 	= typeof param.endPoint !== 'undefined' ? param.endPoint : paypal.urls.execute.url;
+	var headers		= typeof param.headers !== 'undefined' ? param.headers : paypal.urls.execute.headers;
+	var data 		= typeof param.data !== 'undefined' ? param.data : {};
+	var callback	= typeof param.callback !== 'undefined' ? param.callback : function () {};
+	var failure		= typeof param.failure !== 'undefined' ? param.failure : function () {};
+
+	endPoint = endPoint.replace('[paymentId]', data.paymentId);
+
+	helper.ajax({
+		url: endPoint,
+		type: 'POST',
+		data: data.payer_id,
+		callback: callback,
+		failure: failure,
+		headers: headers
+	});
+}
 
 /**
  * [ajax description]
