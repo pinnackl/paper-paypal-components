@@ -106,7 +106,7 @@ paypal.init = function (app, dir) {
 	app.post('/paypal/execute', function (req, res) {
 		var data = {payer_id: {payer_id: req.body.payer_id}, paymentId: req.body.paymentId};
 		var res = res;
-
+		console.log(data);
 		paypal.execute({
 			type: 'POST',
 			data: data,

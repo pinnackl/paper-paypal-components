@@ -42,7 +42,7 @@
 				var parsedResponse = JSON.parse(response.responseText);
 				paypalApi.accessToken = parsedResponse.token_type + " " + parsedResponse.access_token;
 
-				callback();
+				callback(paypalApi.accessToken);
 			},
 			headers: [
 				{'header': 'X-Requested-With', 'value': 'XMLHttpRequest'},
@@ -67,24 +67,14 @@
 			return false;
 		}
 
-		var transaction = typeof params.transaction !== 'undefined' ? params.transaction : false;
-		if (!transaction.length) {
+		var price = typeof params.transaction.total !== 'undefined' ? params.transaction.total  : false;
+		var currency = typeof params.transaction.currency !== 'undefined' ? params.transaction.currency  : false;
+		var description = typeof params.transaction.description !== 'undefined' ? params.transaction.description  : false;
+
+		if (!price || !currency || !description) {
 			console.error("Argument(s) missing");
 			return false;
 		}
-
-		var price, currency, description;
-
-		transaction.forEach(function (el) {
-			price = typeof el.price !== 'undefined' ? el.price  : false;
-			currency = typeof el.currency !== 'undefined' ? el.currency  : false;
-			description = typeof el.description !== 'undefined' ? el.description  : false;
-
-			if (!price || !currency || !description) {
-				console.error("Argument(s) missing");
-				return false;
-			}
-		});
 
 		var cancelUrl = typeof params.cancelUrl !== 'undefined' ? helper.getUrl(params.cancelUrl) : helper.getUrl("/?cancel=true");
 		var returnUrl = typeof params.returnUrl !== 'undefined' ? helper.getUrl(params.returnUrl) : helper.getUrl("/?success=true");
@@ -100,7 +90,7 @@
 					"transactions": [{
 						"amount": {
 							"currency": currency,
-							"total": price
+							"total": price.toFixed(2)
 						},
 						"description": description
 					}],
@@ -132,8 +122,16 @@
 		})
 	};
 
-	paypalApi.executePayment = function (callback) {
-		var callback = typeof callback !== 'undefined' ? callback : function() {}; 
+	paypalApi.executePayment = function (accessToken, callback) {
+		var callback = typeof callback !== 'undefined' ? callback : function() {};
+
+		if (!accessToken || !paypalApi.accessToken) {
+			console.error("Argument(s) missing");
+			return false;
+		}
+
+		var accessToken = accessToken || paypalApi.accessToken;
+
 		var url  = helper.getUrl("/paypal/execute");
 		var query = (window.location.search || '?').substr(1);
         var map = {};
@@ -153,6 +151,10 @@
 				paypalApi.paymentId = parsedResponse.id;
 				paypalApi.state = parsedResponse.state;
 
+				console.log(paypalApi.accessToken);
+				callback();
+			},
+			failure: function (response) {
 				callback();
 			},
 			headers: [{
