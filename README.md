@@ -110,9 +110,46 @@ To help you working with the server side module we've created a client side libr
 Include the library in you application and start using it like so :
 
 ```html
-
+<!--
+...
+-->
         <script src='/node_modules/paper-paypal-component/dist/paypal/paypal-api.js'></script>
     </body>
 </html>
 
 ```
+    Note : To ensure the library is correctly leaded use the console : *console.log(PaypalApi);*
+
+# III - Usage
+
+First of all, we need to create a config file to store the paypal __*clientID*__, and the __*secret*__ key
+
+```javascript
+// config.json
+{
+	"clientID": "YOUR_CLENT_ID",
+	"secret": "YOUR_SECRET_KEY"
+}
+```
+
+    Note : The config.js must be at the same level that your server.js
+
+To use the Paypal SDK, there is 3 main methods available
+
+```javascript
+/**
+ *
+ */
+Paypal.getToken(callback);
+
+/**
+ *
+ */
+Paypal.sendPayment(paramsObject);
+
+/**
+ *
+ */
+Paypal.executePayment(acessToken, callback)
+```
+
