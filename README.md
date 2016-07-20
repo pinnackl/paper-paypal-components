@@ -5,6 +5,9 @@ Use this light SDK to access the simple payal APis to send payment.
 
 The aim of this project is to help developpers to create __*single page application*__ selling website by providing a simple server side implementation of the paypal SDK and a lightweight client side library to work with it.
 
+* index.js
+* paypal-api.js
+
 Requirelent :
 * Nodejs (lastest version)
 * npm
@@ -76,4 +79,4 @@ To do so, use npm to install the module
 $ npm install --save paper-paypal-component
 ```
 
-Now you've installed the module.
+Now you've installed the module, you need to update server.js file to add the module.
