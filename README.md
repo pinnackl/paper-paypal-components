@@ -170,4 +170,56 @@ Paypal.sendPayment(paramsObject);
  */
 Paypal.executePayment(acessToken, callback)
 ```
+**Workflow :**
 
+```javascript
+      _paypalSubmit: function() {
+          var paypalApi = paypalApi;
+          // Set the transtaction object
+          var transaction = {};
+          transaction.description = "";
+          
+          // this.cart represend the cart object
+          // Note: Transaction must bbe filled
+          this.cart.forEach(function (el) {
+            transaction.description += el.item.description + "\n";
+          });
+          
+          // We can imagine the the cart total is pre computed in the cart object
+          transaction.total = this.cart.total;
+          transaction.currency = 'USD';
+          
+          paypalApi.getToken(function () {
+            paypalApi.sendPayment({
+              transaction: transaction,
+              returnUrl: '/confirm'
+            });
+          });
+      },
+```
+
+Then after the user authentocate into Paypal and return to the website
+
+```javascript
+     _executePayment: function() {
+        // listen for the loading event
+        // then dislay payement confirmtion
+        var shopConfirm = this;
+        var paypalApi = window.paypalApi;
+        // Get token to be sure to be able to talk with Paypal
+        // Note: It also can be stored in the browser storage
+        paypalApi.getToken(function (accessToken) {
+          paypalApi.executePayment(accessToken, function (response) {
+            if (paypalApi.state == "approved") {
+              // Change the view to success view
+              shopConfirm._pushState('success');
+              // Clear the cart
+              shopConfirm.fire('clear-cart');
+            } else {
+              // Display an error page
+              shopConfirm._pushState('error');
+            }
+          })
+        });
+      },
+```
