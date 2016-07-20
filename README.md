@@ -79,6 +79,8 @@ To do so, use npm to install the module
 $ npm install --save paper-paypal-component
 ```
 
+## Server side
+
 Now you've installed the module, you need to update server.js file to add that module.
 
 As we have done it for **Express** earlier, just require **`paper-paypal-component`**
@@ -101,3 +103,16 @@ app.use("/node_modules", express.static(__dirname + '/node_modules'));
 // ...
 ```
 
+## Client side
+
+To help you working with the server side module we've created a client side library, that already know all the route and argument to work with the Paypal APIs.
+
+Include the library in you application and start using it like so :
+
+```html
+
+        <script src='/node_modules/paper-paypal-component/dist/paypal/paypal-api.js'></script>
+    </body>
+</html>
+
+```
