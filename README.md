@@ -79,4 +79,25 @@ To do so, use npm to install the module
 $ npm install --save paper-paypal-component
 ```
 
-Now you've installed the module, you need to update server.js file to add the module.
+Now you've installed the module, you need to update server.js file to add that module.
+
+As we have done it for **Express** earlier, just require **`paper-paypal-component`**
+
+```javascript
+var paypal = require('paper-paypal-component');
+
+// paper-paypal-component routes
+paypal.init(app, __dirname);
+```
+
+We also need to define static routes to load resources like CSS or Javascript client side.
+
+Here we create a route for **node_modules** to load the **paypal-api.js** file
+
+```javascript
+
+app.use("/node_modules", express.static(__dirname + '/node_modules'));
+
+// ...
+```
+
