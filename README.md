@@ -107,7 +107,7 @@ app.use("/node_modules", express.static(__dirname + '/node_modules'));
 
 ## Client side
 
-To help you working with the server side module we've created a client side library, that already know all the route and argument to work with the Paypal APIs.
+To help you working with the server side module we've created a client side library, that already know all routes and arguments to work with the Paypal APIs.
 
 Include the library in you application and start using it like so :
 
@@ -120,7 +120,7 @@ Include the library in you application and start using it like so :
 </html>
 
 ```
-    Note : To ensure the library is correctly leaded use the console : *console.log(PaypalApi);*
+    Note : To ensure the library is correctly loaded use the console : *console.log(PaypalApi);*
 
 # III - Usage
 
@@ -136,7 +136,7 @@ First of all, we need to create a config file to store the paypal __*clientID*__
 
     Note : The config.js must be at the same level that your server.js
 
-To use the Paypal SDK, there is 3 main methods available
+To use the Paypal SDK, there are 3 mains methods available
 
 ```javascript
 /**
