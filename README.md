@@ -138,17 +138,35 @@ To use the Paypal SDK, there is 3 main methods available
 
 ```javascript
 /**
- *
+ * GetToken send a request to Paypal
+ * to authenticate the client and get an access token
+ * to the Paypal APIs
+ * @param  {callable}callback The action to be performed after Paypal respond with the token
+ * 
  */
 Paypal.getToken(callback);
 
 /**
+ * SendPayment send a payment request to Paypal
+ * If the response is successfull, the user is asked to authenticate using its credentials
+ * Then the user is send back to the website to confirm payment
+ * @param  {object} params Object containing parameters to send to PayPal
+ * 		   {string} price [required]
+ * 		   {string} currency [required]
+ * 		   {string} description [required]
+ * 		   {string} cancelUrl The helper will build URL from current domain name. Only the URI is needed
+ * 		   {string} returnUrl The helper will build URL from current domain name. Only the URI is needed
+ * 		   {string} callback  The actions to perform after the payment succeed
  *
+ * Note: As Paypal Express Checkout don't support multiple checkout at once
+ * The payment transaction object must correspond to the total of all element in cart to be checked out
  */
 Paypal.sendPayment(paramsObject);
 
 /**
- *
+ * ExecutePayment send a confirmation request to payment to execute the transaction
+ * @param {string} accessToken The client access token to Paypal APIs
+ * @param {callable} callback The actions to perform after the transaction succed
  */
 Paypal.executePayment(acessToken, callback)
 ```
