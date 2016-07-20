@@ -58,7 +58,9 @@ To create a simple HTTP server create a *app* folder and in it create a _**serve
 var express = require('express');
 var app = express();
 
-app.get('/', function (req, res) {
+// Use a route wildcart
+// /!\ To defined specific route, reclare it before the wildcart /!\
+app.get('*', function (req, res) {
   res.send('Hello World!');
 });
 
